@@ -5,18 +5,25 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: Android
+            os: ubuntu-latest
             cmd: flutter build apk --release
             out: build/app/outputs/flutter-apk/app-release.apk
 
           - target: Linux
+            os: ubuntu-latest
             cmd: flutter build linux --release
             out: build/linux/x64/release/bundle
+
+          - target: Windows
+            os: windows-latest
+            cmd: flutter build windows --release
+            out: build/windows/x64/runner/Release
 
     steps:
       - name: Checkout code
