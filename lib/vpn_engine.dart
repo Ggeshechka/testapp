@@ -26,11 +26,11 @@ class VpnEngine {
     ffi.DynamicLibrary dylib;
     
     if (Platform.isWindows) {
-      dylib = ffi.DynamicLibrary.open('libxray.dll');
+      dylib = ffi.DynamicLibrary.open('libXray.dll');
     } else if (Platform.isMacOS) {
-      dylib = ffi.DynamicLibrary.open('libxray.dylib');
+      dylib = ffi.DynamicLibrary.open('libXray.dylib');
     } else if (Platform.isLinux) {
-      dylib = ffi.DynamicLibrary.open('libxray.so');
+      dylib = ffi.DynamicLibrary.open('libXray.so');
     } else {
       throw UnsupportedError('Платформа не поддерживается');
     } // 
