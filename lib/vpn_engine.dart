@@ -36,7 +36,7 @@ class VpnEngine {
     } // 
 
     final getVersion = dylib
-       .lookup<ffi.NativeFunction<XrayVersionC>>('XrayVersion')
+       .lookup<ffi.NativeFunction<XrayVersionC>>('CGoXrayVersion')
        .asFunction<XrayVersionDart>();
 
     final ffi.Pointer<Utf8> resultPtr = getVersion();
