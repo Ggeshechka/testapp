@@ -12,8 +12,8 @@ jobs:
         include:
           - target: Android
             os: ubuntu-latest
-            cmd: flutter build apk --release
-            out: build/app/outputs/flutter-apk/app-release.apk
+            cmd: flutter build apk --release --split-per-abi
+            out: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 
           - target: Linux
             os: ubuntu-latest
