@@ -13,9 +13,7 @@ class VpnEngine {
   static const MethodChannel _channel = MethodChannel('vpn_channel');
 
   static Future<String> getVersion() async {
-    if (Platform.isAndroid |
-
-| Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isIOS) {
       // Для мобильных вызываем нативный код [3]
       return await _channel.invokeMethod('getXrayVersion');
     } else {
