@@ -1,6 +1,5 @@
 package com.example.testapp
 
-import android.util.Base64
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -13,15 +12,11 @@ class MainActivity: FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "getXrayVersion") {
+            if (call.method == "xrayVersion") {
                 try {
-                    // Вызываем функцию из AAR архива
+                    // Просто получаем Base64 от ядра и отдаем во Flutter
                     val base64Version = LibXray.xrayVersion()
-                    // Декодируем Base64
-                    val decodedBytes = Base64.decode(base64Version, Base64.DEFAULT)
-                    val versionStr = String(decodedBytes, Charsets.UTF_8)
-                    
-                    result.success(versionStr)
+                    result.success(base64Version)
                 } catch (e: Exception) {
                     result.error("XRAY_ERROR", e.message, null)
                 }
