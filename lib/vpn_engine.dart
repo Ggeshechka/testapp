@@ -10,33 +10,31 @@ typedef XrayVersionDart = ffi.Pointer<Utf8> Function();
 class VpnEngine {
   static const MethodChannel _channel = MethodChannel('vpn_channel');
 
-  static Future<String> getVersion() async {
-    
+  static Future<String> bridge(String android, String desktop) async {
     String base64Result = switch (Platform.operatingSystem) {
-      'android' || 'ios' => await _channel.invokeMethod('xrayVersion'),
-      _ =>  _getVersionFfiBase64()
-    };
+      'android' || 'ios' => await _channel.invokeMethod(android),
+      _ => () {
+        ffi.DynamicLibrary dylib = ffi.DynamicLibrary.open(
+          switch(Platform.operatingSystem) {
+            'windows' => 'libXray.dll',
+            'macos' => 'libXray.dylib',
+            'linux' => 'libXray.so',
+            _ => throw UnsupportedError('Платформа не поддерживается')
+          }
+        );
 
+        final getVersion = dylib
+          .lookup<ffi.NativeFunction<XrayVersionC>>(desktop)
+          .asFunction<XrayVersionDart>();
+
+        final ffi.Pointer<Utf8> resultPtr = getVersion();
+        return resultPtr.toDartString();
+      }()
+    };
     return utf8.decode(base64Decode(base64Result));
   }
 
-  static String _getVersionFfiBase64() {
-
-    ffi.DynamicLibrary dylib = ffi.DynamicLibrary.open(
-      switch (Platform.operatingSystem) {
-        'windows' => 'libXray.dll',
-        'macos' => 'libXray.dylib',
-        'linux' => 'libXray.so',
-        _ => throw UnsupportedError('Платформа не поддерживается')
-      }
-    );
-
-    final getVersion = dylib
-      .lookup<ffi.NativeFunction<XrayVersionC>>('CGoXrayVersion')
-      .asFunction<XrayVersionDart>();
-
-    final ffi.Pointer<Utf8> resultPtr = getVersion();
-
-    return resultPtr.toDartString();
+  static Future<String> getVersion() {
+    return bridge('xrayVersion', 'CGoXrayVersion');
   }
 }

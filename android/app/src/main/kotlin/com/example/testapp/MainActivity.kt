@@ -12,16 +12,15 @@ class MainActivity: FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "xrayVersion") {
-                try {
-                    // Просто получаем Base64 от ядра и отдаем во Flutter
-                    val base64Version = LibXray.xrayVersion()
-                    result.success(base64Version)
-                } catch (e: Exception) {
-                    result.error("XRAY_ERROR", e.message, null)
+            try {
+                when (call.method) {
+                    "xrayVersion" -> {
+                        result.success(LibXray.xrayVersion())
+                    }
+                    else -> result.notImplemented()
                 }
-            } else {
-                result.notImplemented()
+            } catch (e: Exception) {
+                result.error("XRAY_ERROR", e.message, null)
             }
         }
     }
