@@ -67,45 +67,9 @@ class VpnEngine {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> configs = jsonDecode(response.body);
+      final List<dynamic> configs = jsonDecode(response.body);3
       if (configs.isNotEmpty) {
         Map<String, dynamic> config = configs[0];
-
-        // 1. Настраиваем TUN со сниффингом трафика
-        config['inbounds'] = [
-          {
-            "tag": "tun-in",
-            "port": 10808,
-            "protocol": "tun",
-            "settings": {
-              "autoRoute": true,
-              "strictRoute": true,
-              "stack": "system"
-            },
-            "sniffing": {
-              "enabled": true,
-              "destOverride": ["http", "tls", "fakedns"],
-              "routeOnly": true
-            }
-          }
-        ];
-
-        // 2. Перехватываем DNS
-        config['dns'] = {
-          "servers": ["1.1.1.1", "8.8.8.8"]
-        };
-
-        // 3. Жестко направляем весь TCP/UDP трафик в прокси, удаляя старые правила
-        config['routing'] = {
-          "domainStrategy": "AsIs",
-          "rules": [
-            {
-              "type": "field",
-              "network": "tcp,udp",
-              "outboundTag": "proxy"
-            }
-          ]
-        };
 
         await file.writeAsString(jsonEncode(config));
         return file.path;

@@ -25,11 +25,6 @@ class MainActivity: FlutterActivity() {
                         if (base64Text != null) result.success(LibXray.runXray(base64Text))
                         else result.error("INVALID_ARGUMENT", "Отсутствует base64Text", null)
                     },
-                    "buildMphCache" -> {
-                        val base64Text = call.argument<String>("base64Text")
-                        if (base64Text != null) result.success(LibXray.buildMphCache(base64Text))
-                        else result.error("INVALID_ARGUMENT", "Отсутствует base64Text", null)
-                    },
                     else -> result.notImplemented()
                 }
             } catch (e: Exception) {
